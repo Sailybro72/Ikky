@@ -3,215 +3,569 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sailybro - Lipljan / Lipjan</title>
+    <title>Sailybro Hub</title>
     <style>
+        /* --- KORENSKE PROMENLJIVE ZA SVETLU TEMU --- */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --card-border: #eef2f5;
+            --card-text-muted: #666;
+            --tag-bg: #e1e8ed;
+            --tag-text: #555;
+            --footer-bg: #f8f9fa;
+            --img-container-bg: #f0f3f5; /* Blago zatamnjena pozadina oko slike */
+            --img-border: #bdc3c7;       /* Zatamnjenija linija/okvir oko slike */
+        }
+
+        /* --- KORENSKE PROMENLJIVE ZA TAMNU TEMU --- */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --card-border: #2d2d2d;
+            --card-text-muted: #b0b0b0;
+            --tag-bg: #2d2d2d;
+            --tag-text: #b0b0b0;
+            --footer-bg: #1a1a1a;
+            --img-container-bg: #1a1a1a; /* Prilagođeno za tamni režim */
+            --img-border: #444444;       /* Tamnija linija za tamni režim */
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        
+        /* --- DUGMIĆI ZA PROMENU TEME --- */
+        .theme-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+        .theme-btn {
+            border: none;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        .btn-light {
+            background: #f1c40f;
+            color: #333;
+        }
+        .btn-light:hover {
+            background: #d4ac0d;
+            transform: scale(1.05);
+        }
+        /* CRNO-SIVO DUGME ZA TAMNI REŽIM */
+        .btn-dark {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            border: 1px solid #2d2d2d;
+        }
+        .btn-dark:hover {
+            background: #151515;
+            transform: scale(1.05);
+        }
+
         header {
+            position: relative;
             text-align: center;
             background: #2c3e50;
-            color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            color: #ffffff;
+            padding: 60px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        /* Bela boja samo za naslov Sailybro Exploration u zaglavlju */
         header h1 {
-            color: #ffffff; 
-            margin: 0 0 10px 0;
-            border: none;
-            padding: 0;
+            color: #ffffff !important;
+            margin: 0 0 15px 0;
+            font-size: 3.2em;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+        }
+        header p {
+            color: #ffffff !important; 
+            margin: 15px 0 15px 0;
+            opacity: 0.95;
+            font-size: 1.3em;
+            font-weight: normal;
         }
         header a {
-            color: #fff;
+            color: #ffffff !important;
             text-decoration: none;
-            margin: 0 10px;
+            margin: 0 15px;
             font-weight: bold;
+            font-size: 1.2em;
+            padding: 5px 10px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
         }
         header a:hover {
-            text-decoration: underline;
+            border-bottom: 2px solid #ffffff;
         }
-        h1 {
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* --- KATEGORIJE / FILTERI --- */
+        .filter-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            background: var(--card-bg);
+            border: 2px solid #2c3e50;
+            color: var(--text-color);
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #2c3e50;
+            color: #fff;
+        }
+
+        /* --- GRID I KARTICE --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--card-border);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .card.hide {
+            display: none;
+        }
+        .card-image {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            background-color: #bdc3c7;
+        }
+        .card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-content h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.4em;
+        }
+        [data-theme="dark"] .card-content h3 {
+            color: #fff;
+        }
+        .card-content p {
+            margin: 0;
+            color: var(--card-text-muted);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        .tags {
+            margin-top: 15px;
+        }
+        .tag {
+            display: inline-block;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .card-footer {
+            padding: 15px 20px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--card-border);
+            text-align: right;
+            font-weight: bold;
+            color: #16a085;
+            font-size: 0.9em;
+        }
+
+        /* --- STRANICE SA TEKSTOM --- */
+        .page-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 0;
+            border-radius: 0px 0px 12px 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 0px;
+            overflow: hidden;
+        }
+        .page-content.active {
+            display: block;
+        }
+        
+        .page-content header {
+            margin: 0;
+            padding: 60px 20px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0px; 
+        }
+
+        .page-content header p {
+            color: #ffffff !important;
+            font-size: 1.3em;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin: 5px;
+            font-size: 1em;
+            transition: background 0.2s ease;
+        }
+        .back-btn:hover {
+            background: #1a252f;
+        }
+
+        h1.page-title {
             color: #2c3e50;
             border-bottom: 2px solid #2c3e50;
             padding-bottom: 10px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
-        h2 {
+        [data-theme="dark"] h1.page-title {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+        h2.page-subtitle {
             color: #34495e;
             margin-top: 30px;
         }
-        h3 {
+        [data-theme="dark"] h2.page-subtitle {
+            color: #fff;
+        }
+        h3.page-subheading {
             color: #16a085;
         }
-        p {
+        .page-content p {
             text-align: justify;
-            margin-bottom: 15px;
+            line-height: 1.7;
         }
+        
+        /* AŽURIRAN ZATAMNJENI OKVIR I POZADINA OKO SLIKE */
         figure {
             margin: 30px 0;
             text-align: center;
-            background: #fff;
-            padding: 10px;
+            background: var(--img-container-bg);
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid var(--img-border);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
         }
         img {
             max-width: 100%;
             height: auto;
             border-radius: 4px;
+            border: 1px solid var(--img-border);
         }
         figcaption {
             font-size: 0.9em;
-            color: #555;
-            margin-top: 8px;
+            color: var(--card-text-muted);
+            margin-top: 10px;
             font-style: italic;
-        }
-        hr {
-            border: 0;
-            height: 1px;
-            background: #ccc;
-            margin: 50px 0;
         }
         .section-lang {
             padding: 10px;
-            background: #e1e8ed;
+            background: var(--tag-bg);
             border-left: 5px solid #2c3e50;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin: 30px 0 20px 0;
+            color: var(--text-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: #2c3e50;
+            color: #ffffff !important;
+            font-size: 1.05em;
+            margin-top: 60px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+        }
+        footer p {
+            margin: 0;
+            color: #ffffff !important;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Sailybro Exploration</h1>
-    <p>Izaberite jezik / Choose language:</p>
-    <a href="#srpski">🇷🇸 Srpski</a> | <a href="#english">🇬🇧 English</a>
-</header>
+<!-- GLAVNI POČETNI EKRAN (MENU + KARTICE) -->
+<div id="main-hub">
+    <header>
+        <div class="theme-controls">
+            <button class="theme-btn btn-light" onclick="setTheme('light')">Svetliji režim / Bright mode ☀️</button>
+            <button class="theme-btn btn-dark" onclick="setTheme('dark')">Tamni režim / Dark mode 🌘</button>
+        </div>
+        <h1>Sailybro Exploration - HOMEPAGE</h1>
+        <p>Izaberi šta želiš da čitaš</p>
+    </header>
 
-<!-- ================= SRPSKI JEZIK ================= -->
-<div id="srpski">
-    <div class="section-lang">↓ Srpski - Serbian ↓</div>
-    
-    <h1>🏛 Lipljan</h1>
+    <div class="container">
+        <!-- FILTERI -->
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterSelection('all')">✨ Prikaži Sve</button>
+            <button class="filter-btn" onclick="filterSelection('gradovi')">📍 Gradovi</button>
+            <button class="filter-btn" onclick="filterSelection('istorija')">📜 Istorija</button>
+            <button class="filter-btn" onclick="filterSelection('religija')">⛪ Religija</button>
+        </div>
 
-    <h2>O Lipljanu</h2>
-    <p>
-        <strong>Lipljan</strong> (alb. <em>Lipjan</em>, srp. <em>Липљан</em>) nalazi se u centralnom delu Kosova i Metohije, oko 15–20 km južno od Prištine, u samom srcu prostrane i plodne Kosovske kotline. On predstavlja administrativni centar istoimene opštine i ključnu raskrsnicu puteva koja spaja severni i južni deo regiona, tačnije magistralne pravce između Prištine i Uroševca, kao i pruge koje vode ka Skoplju.
-    </p>
+        <!-- GRID SA KARTICAMA -->
+        <div class="grid">
+            
+            <!-- KARTICA 1: LIPLJAN -->
+            <div class="card gradovi istorija religija" onclick="openPage('lipljan-page')">
+                <div class="card-image" style="background-image: url('https://www.gorazdevac.com/wp-content/uploads/2022/10/nova.jpg');"></div>
+                <div class="card-content">
+                    <h3>🏛 Lipljan / Lipjan</h3>
+                    <p>Saznajte sve o drevnoj Ulpijani, prelepoj crkvi Svetih Flora i Lavra i bogatoj istoriji ovog mesta dugoj preko 2005 godina.</p>
+                    <div class="tags">
+                        <span class="tag">Gradovi</span>
+                        <span class="tag">Istorija</span>
+                        <span class="tag">Religija</span>
+                    </div>
+                </div>
+                <div class="card-footer">Čitaj više →</div>
+            </div>
 
-    <figure>
-        <img src="https://www.gorazdevac.com/wp-content/uploads/2022/10/nova.jpg" width="500" height="333" alt="Crkva Svetih Flora i Lavra u Lipljanu">
-        <figcaption>↳ Crkva Svetih Flora i Lavra – Lipljan (Foto: Arhiva)</figcaption>
-    </figure>
-
-    <h2>⛪ Kulturne i verske znamenitosti</h2>
-    <p>
-        Lipljan je nadaleko poznat po svom jedinstvenom crkvenom kompleksu koji se nalazi u samom centru grada. U istom dvorištu, jedno pored drugog, stoje dva izuzetna hrama: srednjovekovna <strong>Crkva Vavedenja Presvete Bogorodice</strong> (iz XIV veka) i novija, monumentalna <strong>Crkva Svetih Flora i Lavra</strong>. Ova celina predstavlja neprocenjivo kulturno-istorijsko nasleđe i živi svedok viševekovnog trajanja naroda na ovim prostorima.
-    </p>
-
-    <h3>Zašto je crkva posvećena Svetim Floru i Lavru?</h3>
-    <p>
-        Crkva nosi ime Svetih Flora i Lavra, ranohrišćanskih mučenika i braće koja su živela u 2. veku. Bili su nadaleko poznati kao vrhunski kamenoresci, neimari i graditelji. Prema crkvenom predanju i istorijskim izvorima, svoj mučenički život i misionarski rad vezali su upravo za područje drevne <strong>Ulpijane</strong>, koja se prostire u neposrednoj blizini današnjeg Lipljana. Zbog ovog lokalnog istorijskog korena, ovi svetitelji se vekovima sa posebnim pijetetom poštuju u ovom kraju.
-    </p>
-    <p>
-        Praznik Svetih Flora i Lavra (u narodu poznat i kao dan zanatlija i zidara) obeležava se <strong>31. avgusta</strong>. Toga dana hram slavi svoju slavu, služi se sveta liturgija, a portu crkve ispuni veliki broj vernika i gostiju iz okolnih mesta.
-    </p>
-
-    <h3>Unutrašnjost crkve i njena obnova</h3>
-    <p>
-        Unutrašnjost hrama Svetih Flora i Lavra građena je i ukrašavana sa velikom pažnjom tokom niza godina. Kompletan završetak raskošnog freskopisa u tradicionalnom vizantijskom stilu i postavljanje novog, detaljno izrezbarenog ikonostasa <strong>2024. godine</strong> dali su crkvi njen današnji, veličanstveni izgled. Svi ovi obimni radovi izvedeni su zahvaljujući nesebičnoj pomoći, donacijama i prilozima lokalnih vernika, kao i rasejanja.
-    </p>
-
-    <h2>📍 Geografski položaj i privreda</h2>
-    <p>
-        Pored strateške pozicije između Prištine i Uroševca, kroz teritoriju opštine Lipljan protiče reka <strong>Sitnica</strong>, koja natapa plodne ravnice ovog kraja, tradicionalno okrenute poljoprivredi i povrtarstvu. U modernom dobu, blizina Međunarodnog aerodroma u Prištini (udaljen svega desetak kilometara) dodatno daje na značaju privrednom i infrastrukturnom razvoju ove opštine.
-    </p>
-
-    <h2>📜 Istorija i Antička Ulpijana</h2>
-    <p>
-        Lipljan baštini kontinuitet života duži od dva milenijuma. U neposrednoj blizini grada nalaze se ostaci <strong>Antičke Ulpijane</strong>, jednog od najznačajnijih rimskih i vizantijskih gradova na čitavom Balkanu, koji je procvat doživeo tokom vladavine cara Trajana. Nakon razornog zemljotresa u VI veku, grad je obnovio i utvrdio vizantijski car Justinijan I, nazvavši ga <em>Justiniana Secunda</em>. Rimske terme, bazilike, mozaici i utvrđene kapije čine Ulpijanu jednim od najbogatijih arheoloških parkova u regionu.
-    </p>
-
-    <h2>🚆 Saobraćaj i moderni razvoj</h2>
-    <p>
-        Kroz istoriju pa sve do danas, Lipljan je važio za glavnu železničku i drumsku sponu. Izgradnja pruge krajem 19. veka (linija Mitrovica–Skoplje) transformisala je Lipljan iz trgovačkog sela u urbani centar. Danas se grad ubrzano razvija, šireći svoje industrijske i uslužne zone duž glavnih saobraćajnih koridora.
-    </p>
-
-    <h2>⭐ Zanimljivosti</h2>
-    <ul>
-        <li>Ime grada "Lipljan" potiče od reči <strong>lipa</strong>, zbog gustih, mirisnih lipovih šuma koje su u prošlosti pokrivale ovo područje.</li>
-        <li>Na lokalitetu Ulpijane arheolozi i dalje svake godine pronalaze nove artefakte – od rimskog novca do luksuznog nakita, što svedoči o nekadašnjem bogatstvu ovog kraja.</li>
-        <li>U crkvenom dvorištu u Lipljanu starija Crkva Vavedenja krije prelepe srednjovekovne freske koje potiču iz 14. veka, čineći ovaj prostor živim muzejem.</li>
-    </ul>
+        </div>
+    </div>
 </div>
 
-<hr>
 
-<!-- ================= ENGLISH LANGUAGE ================= -->
-<div id="english">
-    <div class="section-lang">↓ English - Engleski ↓</div>
-    
-    <h1>🏛 Lipjan (Lipljan)</h1>
+<!-- ================= STRANICA O LIPLJANU ================= -->
+<div id="lipljan-page" class="page-content">
+    <header>
+        <div class="theme-controls">
+            <button class="theme-btn btn-light" onclick="setTheme('light')">Svetliji režim / Bright mode ☀️</button>
+            <button class="theme-btn btn-dark" onclick="setTheme('dark')">Tamni režim / Dark mode 🌘</button>
+        </div>
+        <h1>Sailybro Exploration</h1>
+        <p>Izaberite jezik / Choose language:</p>
+        <div>
+            <a href="#srpski-content">🇷🇸 Srpski</a> | <a href="#english-content">🇬🇧 English</a>
+        </div>
+    </header>
 
-    <h2>About Lipjan</h2>
-    <p>
-        <strong>Lipjan</strong> (Serbian: <em>Липљан / Lipljan</em>, Albanian: <em>Lipjan</em>) is situated in the central region of Kosovo, approximately 15–20 km south of Pristina, in the heart of the fertile Kosovo basin. It serves as the administrative center of the municipality and stands out as a crucial transportation hub, connecting northern and southern corridors, specifically on the vital route linking Pristina and Ferizaj (Uroševac).
-    </p>
+    <div class="container" style="padding-top: 30px;">
+        <!-- ZAJEDNIČKO DUGME SA STRELICOM -->
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="closePage()">← Nazad na pocetnu / Back to home</button>
+        </div>
 
-    <figure>
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_uKY89hhVquK_wvxZm8omP_H0eEQATSfGT6cfRu_MCJFbIDiaihzhWdab&s=10" width="500" height="333" alt="Church of Saints Florus and Laurus in Lipljan">
-        <figcaption>↳ Church of Saints Florus and Laurus – Lipjan (Archive Photo)</figcaption>
-    </figure>
+        <!-- SRPSKI TEKST -->
+        <div id="srpski-content">
+            <div class="section-lang">↓ Srpski - Serbian ↓</div>
+            
+            
+            <h2 class="page-subtitle">O Lipljanu</h2>
+            <p><strong>Lipljan</strong> (alb. <em>Lipjan</em>, srp. <em>Липљан</em>) nalazi se u centralnom delu Kosova i Metohije, oko 15–20 km južno od Prištine, u samom srcu prostrane i plodne Kosovske kotline. On predstavlja administrativni centar istoimene opštine i ključnu raskrsnicu puteva koja spaja severni i južni deo regiona, tačnije magistralne pravce između Prištine i Uroševca, kao i pruge koje vode ka Skoplju.</p>
 
-    <h2>⛪ Cultural and Religious Landmarks</h2>
-    <p>
-        The town is famous for its unique ecclesiastical complex located in the very center of Lipjan. Sharing the same churchyard side-by-side are two remarkable architectural monuments: the medieval <strong>Church of the Presentation of the Blessed Virgin Mary</strong> (dating back to the 14th century) and the newer, grand <strong>Church of Saints Florus and Laurus</strong>. Together, they represent an invaluable cultural heritage.
-    </p>
+            <figure>
+                <img src="https://www.gorazdevac.com/wp-content/uploads/2022/10/nova.jpg" alt="Crkva Svetih Flora i Lavra u Lipljanu">
+                <figcaption>↳ Crkva Svetih Flora i Lavra – Lipljan (Foto: Arhiva)</figcaption>
+            </figure>
 
-    <h3>Why is the church dedicated to Saints Florus and Laurus?</h3>
-    <p>
-        The church honors Saints Florus and Laurus, twin brothers and early Christian martyrs who lived during the 2nd century. They were renowned across the region as masterful stonemasons, architects, and builders. According to Christian tradition, their missionary work and eventual martyrdom took place in the ancient city of <strong>Ulpiana</strong>, located just a few kilometers from modern-day Lipjan. Due to this ancient connection, they have been venerated locally for centuries.
-    </p>
-    <p>
-        The feast day of Saints Florus and Laurus is celebrated annually on <strong>August 31st</strong>. On this day, a grand Divine Liturgy is held, drawing numerous pilgrims, craftsmen, and believers from across the region to celebrate the church's patronal feast.
-    </p>
+            <h2 class="page-subtitle">⛪ Culturne i verske znamenitosti</h2>
+            <p>Lipljan je nadaleko poznat po svom jedinstvenom crkvenom kompleksu koji se nalazi u samom centru grada. U istom dvorištu, jedno pored drugog, stoje dva izuzetna hrama: srednjovekovna <strong>Crkva Vavedenja Presvete Bogorodice</strong> (iz XIV veka) i novija, monumentalna <strong>Crkva Svetih Flora i Lavra</strong>. Ova celina predstavlja neprocenjivo kulturno-istorijsko nasleđe i živi svedok viševekovnog trajanja naroda na ovim prostorima.</p>
 
-    <h3>Interior and Modern Restoration</h3>
-    <p>
-        The interior of the church has been meticulously embellished over the years. With the completion of its breathtaking Byzantine-style frescoes and the installation of an intricately carved new iconostasis in <strong>2024</strong>, the church achieved its current magnificent appearance. These extensive renovations were entirely funded by generous contributions from local parishioners and the diaspora.
-    </p>
+            <h3 class="page-subheading">Zašto je crkva posvećena Svetim Floru i Lavru?</h3>
+            <p>Crkva nosi ime Svetih Flora i Lavra, ranohrišćanskih mučenika i braće koja su bila aktivna u davnoj prošlosti. Bili su nadaleko poznati kao vrhunski kamenoresci, neimari i graditelji. Prema crkvenom predanju i istorijskim izvorima, svoj mučenički život i misionarski rad vezali su upravo za područje drevne <strong>Ulpijane</strong>, koja se prostire u neposrednoj blizini današnjeg Lipljana. Zbog ovog lokalnog istorijskog korena, ovi svetitelji se vekovima sa posebnim pijetetom poštuju u ovom kraju.</p>
+            <p>Praznik Svetih Flora i Lavra obeležava se <strong>31. avgusta</strong>. Toga dana hram slavi svoju slavu, služi se sveta liturgija, a portu crkve ispuni veliki broj vernika i gostiju iz okolnih mesta.</p>
 
-    <h2>📍 Geographical Location and Economy</h2>
-    <p>
-        In addition to its central location between major urban centers, the municipality is traversed by the <strong>Sitnica River</strong>, which nourishes the surrounding flatlands, long famous for agriculture. In modern times, its proximity to the Pristina International Airport (located only about 10 kilometers away) heavily boosts its logistical and economic potential.
-    </p>
+            <h3 class="page-subheading">Unutrašnjost crkve i njena obnova</h3>
+            <p>Unutrašnjost hrama Svetih Flora i Lavra građena je i ukrašavana sa velikom pažnjom tokom niza godina. Kompletan završetak raskošnog freskopisa u tradicionalnom vizantijskom stilu i postavljanje novog, detaljno izrezbarenog ikonostasa <strong>2029. godine</strong> dali su crkvi njen današnji, veličanstveni izgled. Svi ovi obimni radovi izvedeni su zahvaljujući nesebičnoj pomoći, donacijama i prilozima lokalnih vernika, kao i rasejanja.</p>
 
-    <h2>📜 Rich History and Ancient Ulpiana</h2>
-    <p>
-        Lipjan boasts over two millennia of history. Near the modern town lie the monumental ruins of <strong>Ancient Ulpiana</strong>, once one of the most prominent Roman and Byzantine cities in the region of Dardania, flourishing under Emperor Trajan. After a catastrophic earthquake in the 6th century, it was rebuilt and heavily fortified by Emperor Justinian I, who renamed it <em>Justiniana Secunda</em>. Its remnants—including ancient basilicas, mosaics, and Roman baths—make it a premier archaeological destination.
-    </p>
+            <h2 class="page-subtitle">📍 Geografski položaj i privreda</h2>
+            <p>Pored strateške pozicije između Prištine i Uroševca, kroz teritoriju opštine Lipljan protiče reka <strong>Sitnica</strong>, koja natapa plodne ravnice ovog kraja, tradicionalno okrenute poljoprivredi i povrtarstvu. U modernom dobu, blizina Međunarodnog aerodroma u Prištini (udaljen svega desetak kilometara) dodatno daje na značaju privrednom i infrastrukturnom razvoju ove opštine.</p>
 
-    <h2>🚆 Infrastructure and Connectivity</h2>
-    <p>
-        Throughout history, Lipjan has been a major transit node. The construction of the railway line in the late 19th century (connecting Mitrovica to Skopje) accelerated its transition from a quiet market village into a bustling urban town. Today, Lipjan continues to experience rapid commercial growth along its main transit corridors.
-    </p>
+            <h2 class="page-subtitle">📜 Istorija i Antička Ulpijana</h2>
+            <p>Lipljan baštini kontinuitet života duži od 2005 godina. U neposrednoj blizini grada nalaze se ostaci <strong>Antičke Ulpijane</strong>, jednog od najznačajnijih rimskih i vizantijskih gradova na čitavom Balkanu, koji je procvat doživeo tokom vladavine rimskih careva. Nakon razornog zemljotresa u starom veku, grad je obnovljen i utvrdio vizantijski car, nazvavši ga <em>Justiniana Secunda</em>. Rimske terme, bazilike, mozaici i utvrđene kapije čine Ulpijanu jednim od najbogatijih arheoloških parkova u regionu.</p>
 
-    <h2>⭐ Interesting Facts</h2>
-    <ul>
-        <li>The name "Lipljan/Lipjan" originates from the Slavic word for the <strong>linden tree</strong> (<em>lipa</em>), referencing the dense, fragrant linden forests that once dominated the area.</li>
-        <li>Archaeologists at the Ulpiana site discover new artifacts every year, ranging from ancient Roman coins to elite jewelry, reflecting the ancient city's immense wealth.</li>
-        <li>The adjacent 14th-century medieval church preserves striking authentic frescoes inside, turning the entire courtyard into a living historical museum.</li>
-    </ul>
+            <h2 class="page-subtitle">🚆 Saobraćaj i moderni razvoj</h2>
+            <p>Kroz istoriju pa sve do danas, Lipljan je važio za glavnu železničku i drumsku sponu. Izgradnja pruge krajem prošlih vekova transformisala je Lipljan iz trgovačkog sela u urbani centar. Danas se grad ubrzano razvija, šireći svoje industrijske i uslužne zone duž glavnih saobraćajnih koridora.</p>
+
+            <h2 class="page-subtitle">⭐ Zanimljivosti</h2>
+            <ul>
+                <li>Ime grada "Lipljan" potiče od reči <strong>lipa</strong>, zbog gustih, mirisnih lipovih šuma koje su u prošlosti pokrivale ovo područje.</li>
+                <li>Na lokalitetu Ulpijane arheolozi i dalje svake godine pronalaze nove artefakte – od rimskog novca do luksuznog nakita.</li>
+                <li>U crkvenom dvorištu u Lipljanu starija Crkva Vavedenja krije prelepe srednjovekovne freske.</li>
+            </ul>
+        </div>
+
+        <hr style="border: 0; height: 1px; background: #ccc; margin: 50px 0;">
+
+        <!-- ENGLESKI TEKST -->
+        <div id="english-content">
+            <div class="section-lang">↓ English - Engleski ↓</div>
+            
+            
+            <h2 class="page-subtitle">About Lipjan</h2>
+            <p><strong>Lipjan</strong> (Serbian: <em>Липљан / Lipljan</em>, Albanian: <em>Lipjan</em>) is situated in the central region of Kosovo, approximately 15–20 km south of Pristina, in the heart of the fertile Kosovo basin. It serves as the administrative center of the municipality and stands out as a crucial transportation hub, connecting northern and southern corridors, specifically on the vital route linking Pristina and Ferizaj (Uroševac).</p>
+
+            <figure>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_uKY89hhVquK_wvxZm8omP_H0eEQATSfGT6cfRu_MCJFbIDiaihzhWdab&s=10" alt="Church of Saints Florus and Laurus in Lipljan">
+                <figcaption>↳ Church of Saints Florus and Laurus – Lipjan (Archive Photo)</figcaption>
+            </figure>
+
+            <h2 class="page-subtitle">⛪ Cultural and Religious Landmarks</h2>
+            <p>The town is famous for its unique ecclesiastical complex located in the very center of Lipjan. Sharing the same churchyard side-by-side are two remarkable architectural monuments: the medieval <strong>Church of the Presentation of the Blessed Virgin Mary</strong> and the newer, grand <strong>Church of Saints Florus and Laurus</strong>. Together, they represent an invaluable cultural heritage.</p>
+
+            <h3 class="page-subheading">Why is the church dedicated to Saints Florus and Laurus?</h3>
+            <p>The church honors Saints Florus and Laurus, twin brothers and early Christian martyrs. They were renowned across the region as masterful stonemasons, architects, and builders. According to Christian tradition, their missionary work and eventual martyrdom took place in the ancient city of <strong>Ulpiana</strong>, located just a few kilometers from modern-day Lipjan. Due to this ancient connection, they have been venerated locally for centuries.</p>
+            <p>The feast day of Saints Florus and Laurus is celebrated annually on <strong>August 31st</strong>. On this day, a grand Divine Liturgy is held, drawing numerous pilgrims, craftsmen, and believers from across the region to celebrate the church's patronal feast.</p>
+
+            <h3 class="page-subheading">Interior and Modern Restoration</h3>
+            <p>The interior of the church has been meticulously embellished over the years. With the completion of its breathtaking Byzantine-style frescoes and the installation of an intricately carved new iconostasis in <strong>2029</strong>, the church achieved its current magnificent appearance. These extensive renovations were entirely funded by generous contributions from local parishioners and the diaspora.</p>
+
+            <h2 class="page-subtitle">📍 Geographical Location and Economy</h2>
+            <p>In addition to its central location between major urban centers, the municipality is traversed by the <strong>Sitnica River</strong>, which nourishes the surrounding flatlands, long famous for agriculture. In modern times, its proximity to the Pristina International Airport (located only about 10 kilometers away) heavily boosts its logistical and economic potential.</p>
+
+            <h2 class="page-subtitle">📜 Rich History and Ancient Ulpiana</h2>
+            <p>Lipjan boasts over 2005 years of history. Near the modern town lie the monumental ruins of <strong>Ancient Ulpiana</strong>, once one of the most prominent Roman and Byzantine cities in the region of Dardania, flourishing under Roman emperors. After a catastrophic earthquake, it was rebuilt and heavily fortified, later being known as <em>Justiniana Secunda</em>. Its remnants—including ancient basilicas, mosaics, and Roman baths—make it a premier archaeological destination.</p>
+
+            <h2 class="page-subtitle">🚆 Summary and Connectivity</h2>
+            <p>Throughout history, Lipjan has been a major transit node. The construction of the railway line in the late era accelerated its transition from a quiet market village into a bustling urban town. Today, Lipjan continues to experience rapid commercial growth along its main transit corridors.</p>
+
+            <h2 class="page-subtitle">⭐ Interesting Facts</h2>
+            <ul>
+                <li>The name "Lipljan/Lipjan" originates from the Slavic word for the <strong>linden tree</strong> (<em>lipa</em>), referencing the dense, fragrant linden forests that once dominated the area.</li>
+                <li>Archaeologists at the Ulpiana site discover new artifacts every year, ranging from ancient Roman coins to elite jewelry.</li>
+                <li>The adjacent medieval church preserves striking authentic frescoes inside.</li>
+            </ul>
+        </div>
+    </div>
 </div>
+
+<footer>
+    <p>&copy; 2026 Sailybro Exploration. Sva prava zadržana.</p>
+</footer>
+
+<!-- INTERAKTIVNA JS SKRIPTA ZA REFRESH (F5) PROBLEM I REŽIME RADA -->
+<script>
+function setTheme(themeName) {
+    if (themeName === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+});
+
+function checkHash() {
+    var hash = window.location.hash;
+    
+    if (hash === '#lipljan') {
+        document.getElementById('main-hub').style.display = 'none';
+        document.getElementById('lipljan-page').style.display = 'block';
+    } else {
+        document.getElementById('lipljan-page').style.display = 'none';
+        document.getElementById('main-hub').style.display = 'block';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', checkHash);
+window.addEventListener('hashchange', checkHash);
+
+function openPage(pageId) {
+    if (pageId === 'lipljan-page') {
+        window.location.hash = 'lipljan';
+    }
+    window.scrollTo(0, 0);
+}
+
+function closePage() {
+    window.location.hash = '';
+    window.scrollTo(0, 0);
+}
+
+function filterSelection(c) {
+    var x, i;
+    x = document.getElementsByClassName("card");
+    if (c == "all") c = "";
+    
+    for (i = 0; i < x.length; i++) {
+        x[i].classList.add("hide");
+        if (x[i].className.indexOf(c) > -1) {
+            x[i].classList.remove("hide");
+        }
+    }
+
+    var btnContainer = document.querySelector(".filter-container");
+    var btns = btnContainer.getElementsByClassName("filter-btn");
+    for (var j = 0; j < btns.length; j++) {
+        btns[j].addEventListener("click", function() {
+            var current = document.getElementsByClassName("active");
+            if (current.length > 0) {
+                current[0].className = current[0].className.replace(" active", "");
+            }
+            this.className += " active";
+        });
+    }
+}
+</script>
 
 </body>
 </html>
